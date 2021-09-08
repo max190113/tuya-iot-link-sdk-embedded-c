@@ -13,6 +13,6 @@
 #define PR_WARN  log_warn
 #define PR_INFO  log_info
 #define PR_DEBUG log_debug
-#define PR_TRACE log_trace
+#define PR_TRACE log_traces
 
 #endif

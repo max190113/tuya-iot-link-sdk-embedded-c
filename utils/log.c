@@ -21,6 +21,9 @@
  */
 
 #include "log.h"
+//##################UIS8910 Adapter##################
+#include "osi_log.h"
+//###################################################
 
 #define MAX_CALLBACKS 32
 
@@ -54,30 +57,27 @@ static void stdout_callback(log_Event *ev) {
   char buf[16];
   buf[strftime(buf, sizeof(buf), "%H:%M:%S", ev->time)] = '\0';
 #ifdef LOG_USE_COLOR
-  fprintf(
-    ev->udata, "%s %s%-5s\x1b[0m \x1b[90m%s:%d:\x1b[0m ",
+  OSI_PRINTFI(
+    "%s %s%-5s\x1b[0m \x1b[90m%s:%d:\x1b[0m ",
     buf, level_colors[ev->level], level_strings[ev->level],
     ev->file, ev->line);
 #else
-  fprintf(
-    ev->udata, "%s %-5s %s:%d: ",
+  OSI_PRINTFI(
+    "%s %-5s %s:%d: ",
     buf, level_strings[ev->level], ev->file, ev->line);
 #endif
-  vfprintf(ev->udata, ev->fmt, ev->ap);
-  fprintf(ev->udata, "\n");
-  fflush(ev->udata);
+  osiTraceVprintf(LOG_TAG_TUYA, ev->fmt, ev->ap);
 }
 
 
 static void file_callback(log_Event *ev) {
   char buf[64];
   buf[strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", ev->time)] = '\0';
-  fprintf(
-    ev->udata, "%s %-5s %s:%d: ",
+  OSI_PRINTFI(
+    "%s %-5s %s:%d: ",
     buf, level_strings[ev->level], ev->file, ev->line);
-  vfprintf(ev->udata, ev->fmt, ev->ap);
-  fprintf(ev->udata, "\n");
-  fflush(ev->udata);
+  // vprintf(ev->fmt, ev->ap);
+  osiTraceVprintf(LOG_TAG_TUYA, ev->fmt, ev->ap);
 }
 
 

@@ -16,6 +16,16 @@
 #include "mqtt_bind.h"
 #include "cJSON.h"
 #include "MultiTimer.h"
+#include "osi_api.h"
+#include "osi_log.h"
+#include "osi_pipe.h"
+#include "at_engine.h"
+#include "vfs.h"
+
+
+#define TUYA_NVS_PATH "/TUYA_NVS/" //define NVS's path for tuya iot sdk
+
+char at_cgact_flag = 0; //judge the AT command "AT+CGACT" is success or not
 
 typedef enum {
     STATE_IDLE,
@@ -34,6 +44,31 @@ typedef enum {
     STATE_EXIT,
 } tuya_run_state_t;
 
+
+/* -------------------------------------------------------------------------- */
+/*            8910 virtual at command,respond to "AT+CGACT=1"                 */
+/* -------------------------------------------------------------------------- */
+
+static void prvVirtAtRespCallback(void *param, unsigned event)
+{
+    osiPipe_t *pipe = (osiPipe_t *)param;
+    char buf[256];
+    OSI_LOGI(0, "get virtual at command successfully!");
+    for (;;)
+    {
+        int bytes = osiPipeRead(pipe, buf, 255);
+        if (bytes <= 0)
+            break;
+
+        buf[bytes] = '\0';
+        OSI_LOGXI(OSI_LOGPAR_IS, 0, "VAT1 <--(%d): %s", bytes, buf);
+        if (strstr(buf, "OK") != NULL) {
+            OSI_LOGI(0, "CGACT virtual at command successfully!");
+            at_cgact_flag = 1;
+            break;
+        }
+    }
+}
 
 /* -------------------------------------------------------------------------- */
 /*                          Internal utils functions                          */
@@ -86,11 +121,13 @@ static int activated_data_read(const char* storage_key, tuya_activated_data_t* o
         TY_LOGE("activate_string malloc fail.");
         return rt;
     }
+    TY_LOGW("read_buf addr1:%x", readbuf);
 
     /* Try read activate config data */
     rt = local_storage_get((const char*)storage_key, (uint8_t*)readbuf, &readlen);
     if (OPRT_OK != rt) {
         TY_LOGW("activate config not found:%d", rt);
+        TY_LOGW("read_buf addr5:%x", readbuf);
         system_free(readbuf);
         return rt;
     }
@@ -497,6 +534,34 @@ int tuya_iot_init(tuya_iot_client_t* client, const tuya_iot_config_t* config)
 {
     int ret = OPRT_OK;
     TY_LOGI("tuya_iot_init");
+    osiPipe_t *at_rx_pipe = osiPipeCreate(1024);
+    osiPipe_t *at_tx_pipe = osiPipeCreate(1024);
+    osiPipeSetReaderCallback(at_tx_pipe, OSI_PIPE_EVENT_RX_ARRIVED,
+                             prvVirtAtRespCallback, at_tx_pipe);
+
+    atDeviceVirtConfig_t cfg = {
+        .name = OSI_MAKE_TAG('V', 'A', 'T', '1'),
+        .rx_pipe = at_rx_pipe,
+        .tx_pipe = at_tx_pipe,
+    };
+    atDevice_t *device = atDeviceVirtCreate(&cfg);
+    atDispatch_t *dispatch = atDispatchCreate(device);
+    atDeviceSetDispatch(device, dispatch);
+    atDeviceOpen(device);
+    
+    const char *cmd = "AT+CGACT=1\r\n";
+    while (!at_cgact_flag) {
+        if (osiPipeWriteAll(at_rx_pipe, cmd, strlen(cmd), OSI_WAIT_FOREVER) != 0) {
+            OSI_LOGXI(OSI_LOGPAR_S, 0, "VAT1 -->: %s", cmd);
+        }
+        system_sleep(500);
+    }
+    atDeviceClose(device);
+
+    if (vfs_mkdir(TUYA_NVS_PATH, 0777) < 0) {
+        OSI_LOGE(0, "mkdir error : %s", TUYA_NVS_PATH);
+    }
+
     if (NULL == client || NULL == config) {
         return OPRT_INVALID_PARM;
     }
