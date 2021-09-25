@@ -76,7 +76,6 @@ static void file_callback(log_Event *ev) {
   OSI_PRINTFI(
     "%s %-5s %s:%d: ",
     buf, level_strings[ev->level], ev->file, ev->line);
-  // vprintf(ev->fmt, ev->ap);
   osiTraceVprintf(LOG_TAG_TUYA, ev->fmt, ev->ap);
 }
 
