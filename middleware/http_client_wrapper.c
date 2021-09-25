@@ -115,7 +115,7 @@ http_client_status_t http_client_request( const http_client_request_t* request,
             .host = request->host,
             .port = request->port,
             .timeout_ms = request->timeout_ms,
-            .cert_verify = true
+            .cert_verify = true,
     });
 
     if (OPRT_OK != rt) {
