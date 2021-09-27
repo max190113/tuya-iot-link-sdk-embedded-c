@@ -14,6 +14,9 @@
 #include <string.h>
 #include <time.h>
 
+#include "osi_log.h"
+#define LOG_TAG_TUYA OSI_MAKE_LOG_TAG('T', 'U', 'Y', 'A')
+
 #define LOG_VERSION "0.1.0"
 // #define LOG_USE_COLOR
 
