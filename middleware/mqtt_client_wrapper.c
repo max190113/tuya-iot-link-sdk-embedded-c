@@ -111,7 +111,7 @@ mqtt_client_status_t mqtt_client_init(void* client, const mqtt_client_config_t* 
             .host = context->config.host,
             .port = context->config.port,
             .timeout_ms = context->config.timeout_ms,
-            .cert_verify = true,
+            .cert_verify = false,
 	});
 	if (OPRT_OK != ret) {
 		log_error("network_tls_init fail:%d", ret);
