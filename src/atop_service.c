@@ -109,7 +109,7 @@ int atop_service_activate_request(const tuya_activite_request_t* request,
     /* default support device OTA */
     offset += sprintf(buffer + offset,",\"devAttribute\":%u", 1 << ATTRIBUTE_OTA);
 
-    offset += sprintf(buffer + offset,",\"cadVer\":\"%s\",\"cdVer\":\"%s\",\"t\":%d}",
+    offset += sprintf(buffer + offset,",\"cadVer\":\"%s\",\"cdVer\":\"%s\",\"t\":%ld}",
                         CAD_VER, CD_VER, timestamp);
 
     TY_LOGV("POST JSON:%s", buffer);
@@ -156,7 +156,7 @@ int atop_service_client_reset(const char* id, const char* key)
     }
 
     uint32_t timestamp = system_timestamp();
-    buffer_len = snprintf(buffer, RESET_POST_BUFFER_LEN, "{\"t\":%d}", timestamp);
+    buffer_len = snprintf(buffer, RESET_POST_BUFFER_LEN, "{\"t\":%ld}", timestamp);
     TY_LOGV("POST JSON:%s", buffer);
 
     /* atop_base_request object construct */
@@ -215,14 +215,14 @@ int atop_service_dynamic_cfg_get_v20(const char* id, const char* key, HTTP_DYNAM
     //当前种类较少，后续如果增加，需要动态拼装消息内容
     switch(type){
         case HTTP_DYNAMIC_CFG_TZ:
-            snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"type\":\"[\\\"timezone\\\"]\",\"t\":%d}", timestamp);
+            snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"type\":\"[\\\"timezone\\\"]\",\"t\":%ld}", timestamp);
             break;
         case HTTP_DYNAMIC_CFG_RATERULE:
-            snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"type\":\"[\\\"rateRule\\\"]\",\"t\":%d}", timestamp);
+            snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"type\":\"[\\\"rateRule\\\"]\",\"t\":%ld}", timestamp);
             break;
         case HTTP_DYNAMIC_CFG_ALL:
         default:
-            snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"type\":\"[\\\"timezone\\\",\\\"rateRule\\\"]\",\"t\":%d}", timestamp);
+            snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"type\":\"[\\\"timezone\\\",\\\"rateRule\\\"]\",\"t\":%ld}", timestamp);
             break;
     }
 
@@ -269,7 +269,7 @@ int atop_service_upgrade_info_get_v44(const char* id, const char* key, int chann
     }
 
     uint32_t timestamp = system_timestamp();
-    buffer_len = snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"type\":%d,\"t\":%d}", channel, timestamp);
+    buffer_len = snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"type\":%d,\"t\":%ld}", channel, timestamp);
     TY_LOGV("POST JSON:%s", buffer);
 
     /* atop_base_request object construct */
@@ -313,7 +313,7 @@ int atop_service_auto_upgrade_info_get_v44(const char* id, const char* key, atop
     }
 
     uint32_t timestamp = system_timestamp();
-    buffer_len = snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"subId\":null,\"t\":%d}", timestamp);
+    buffer_len = snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"subId\":null,\"t\":%ld}", timestamp);
     TY_LOGV("POST JSON:%s", buffer);
 
     /* atop_base_request object construct */
@@ -358,7 +358,7 @@ int atop_service_upgrade_status_update_v41(const char* id, const char* key, int 
 
     uint32_t timestamp = system_timestamp();
     buffer_len = snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN,
-        "{\"type\":%d,\"upgradeStatus\":%d,\"t\":%d}", channel, status, timestamp);
+        "{\"type\":%d,\"upgradeStatus\":%d,\"t\":%ld}", channel, status, timestamp);
     TY_LOGV("POST JSON:%s", buffer);
 
     /* atop_base_request object construct */
@@ -413,7 +413,7 @@ int atop_service_version_update_v41(const char* id, const char* key, const char 
     }
 
     uint32_t timestamp = system_timestamp();
-    buffer_len = snprintf(buffer, UPDATE_VERSION_BUFFER_LEN, "{\"versions\":\"%s\",\"t\":%d}", versions, timestamp);
+    buffer_len = snprintf(buffer, UPDATE_VERSION_BUFFER_LEN, "{\"versions\":\"%s\",\"t\":%ld}", versions, timestamp);
     TY_LOGV("POST JSON:%s", buffer);
 
     /* atop_base_request object construct */
@@ -467,7 +467,7 @@ int atop_service_put_rst_log_v10(const char* id, const char* key,const char *rst
     }
     uint32_t timestamp = system_timestamp();
     buffer_len = snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN,
-        "{%s,\"t\":%d}", rst_buffer, timestamp);
+        "{%s,\"t\":%ld}", rst_buffer, timestamp);
     TY_LOGV("POST JSON:%s", buffer);
 
     /* atop_base_request object construct */
@@ -524,7 +524,7 @@ int atop_service_outdoors_property_upload(const char* id, const char* key, const
 
     // {"countryCode":"86","phone":"15656065877"}
     buffer_len = snprintf(buffer, UPDATE_PROPERTY_BUFFER_LEN,
-        "{\"devId\":\"%s\",\"property\":{\"code\":\"phoneInfo\",\"value\":{\"countryCode\":\"%s\",\"phone\":\"%s\"}},\"t\":%d}",
+        "{\"devId\":\"%s\",\"property\":{\"code\":\"phoneInfo\",\"value\":{\"countryCode\":\"%s\",\"phone\":\"%s\"}},\"t\":%ld}",
         id, countryCode, phone, timestamp);
     TY_LOGV("POST JSON:%s", buffer);
 
@@ -582,7 +582,7 @@ int atop_service_iccid_upload(const char* id, const char* key, const char *iccid
 
     // {"countryCode":"86","phone":"15656065877"}
     buffer_len = snprintf(buffer, UPDATE_PROPERTY_BUFFER_LEN,
-        "{\"metas\":{\"catIccId\":\"%s\"},\"t\":%d}", iccid, timestamp);
+        "{\"metas\":{\"catIccId\":\"%s\"},\"t\":%ld}", iccid, timestamp);
     TY_LOGV("POST JSON:%s", buffer);
 
     /* atop_base_request object construct */
@@ -636,7 +636,7 @@ int atop_service_sync_check(const char* id, const char* key, DEV_SYNC_STATUS_E *
         return OPRT_MALLOC_FAILED;
     }
 
-    buffer_len = snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"t\":%d}", timestamp);
+    buffer_len = snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"t\":%ld}", timestamp);
     TY_LOGV("POST JSON:%s", buffer);
 
     /* atop_base_request object construct */
@@ -703,7 +703,7 @@ int atop_service_cache_dp_get(const char* id, const char* key,
         return OPRT_MALLOC_FAILED;
     }
 
-    buffer_len = snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"dps\":[%s],\"t\":%d}",req_dps,timestamp);
+    buffer_len = snprintf(buffer, ATOP_DEFAULT_POST_BUFFER_LEN, "{\"dps\":[%s],\"t\":%ld}",req_dps,timestamp);
     TY_LOGV("POST JSON:%s", buffer);
 
 

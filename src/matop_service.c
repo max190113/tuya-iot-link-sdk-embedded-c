@@ -262,7 +262,7 @@ int matop_service_request_async(matop_context_t* context,
 
 	/* buffer format */
     request_datalen = snprintf(request_buffer, request_bufferlen,
-						"{\"id\":%d,\"a\":\"%s\",\"t\":%d,\"data\":%s",
+						"{\"id\":%d,\"a\":\"%s\",\"t\":%ld,\"data\":%s",
 						message_handle->id, request->api, system_timestamp(), request->data?((char*)request->data):"{}");
 	if (request->version) {
 		request_datalen += snprintf(request_buffer + request_datalen, request_bufferlen - request_datalen,
@@ -316,7 +316,7 @@ int matop_service_client_reset(matop_context_t* context)
         return OPRT_MALLOC_FAILED;
     }
 
-    buffer_len = snprintf(buffer, MATOP_DEFAULT_BUFFER_LEN, "{\"t\":%d}", system_timestamp());
+    buffer_len = snprintf(buffer, MATOP_DEFAULT_BUFFER_LEN, "{\"t\":%ld}", system_timestamp());
     TY_LOGV("POST JSON:%s", buffer);
 
     /* ATOP service request send */
@@ -350,7 +350,7 @@ int matop_service_version_update(matop_context_t* context, const char *versions)
         return OPRT_MALLOC_FAILED;
     }
 
-    buffer_len = snprintf(buffer, UPDATE_VERSION_BUFFER_LEN, "{\"versions\":\"%s\",\"t\":%d}", versions, system_timestamp());
+    buffer_len = snprintf(buffer, UPDATE_VERSION_BUFFER_LEN, "{\"versions\":\"%s\",\"t\":%ld}", versions, system_timestamp());
     TY_LOGV("POST JSON:%s", buffer);
 
     /* ATOP service request send */
@@ -384,7 +384,7 @@ int matop_service_upgrade_status_update(matop_context_t* context, int channel, i
     }
 
     buffer_len = snprintf(buffer, MATOP_DEFAULT_BUFFER_LEN,
-        "{\"type\":%d,\"upgradeStatus\":%d,\"t\":%d}", channel, status, system_timestamp());
+        "{\"type\":%d,\"upgradeStatus\":%d,\"t\":%ld}", channel, status, system_timestamp());
     TY_LOGV("POST JSON:%s", buffer);
 
     /* ATOP service request send */
@@ -418,7 +418,7 @@ int matop_service_upgrade_info_get(matop_context_t* context, int channel,
         return OPRT_MALLOC_FAILED;
     }
 
-    buffer_len = snprintf(buffer, MATOP_DEFAULT_BUFFER_LEN, "{\"type\":%d,\"t\":%d}", channel, system_timestamp());
+    buffer_len = snprintf(buffer, MATOP_DEFAULT_BUFFER_LEN, "{\"type\":%d,\"t\":%ld}", channel, system_timestamp());
     TY_LOGV("POST JSON:%s", buffer);
 
     /* ATOP service request send */
@@ -454,7 +454,7 @@ int matop_service_auto_upgrade_info_get(matop_context_t* context,
         return OPRT_MALLOC_FAILED;
     }
 
-    buffer_len = snprintf(buffer, MATOP_DEFAULT_BUFFER_LEN, "{\"subId\":null,\"t\":%d}", system_timestamp());
+    buffer_len = snprintf(buffer, MATOP_DEFAULT_BUFFER_LEN, "{\"subId\":null,\"t\":%ld}", system_timestamp());
     TY_LOGV("POST JSON:%s", buffer);
 
     /* ATOP service request send */
@@ -543,7 +543,7 @@ int matop_service_put_rst_log(matop_context_t* context, int reason)
         return OPRT_MALLOC_FAILED;
     }
 
-	buffer_len = snprintf(buffer, UPDATE_VERSION_BUFFER_LEN, "{%s,\"t\":%d}", rst_buffer, system_timestamp());
+	buffer_len = snprintf(buffer, UPDATE_VERSION_BUFFER_LEN, "{%s,\"t\":%ld}", rst_buffer, system_timestamp());
     TY_LOGV("POST JSON:%s", buffer);
 
     /* ATOP service request send */
@@ -584,14 +584,14 @@ int matop_service_dynamic_cfg_get(matop_context_t* context,
 
     switch (type) {
     case HTTP_DYNAMIC_CFG_TZ:
-        snprintf(buffer, MATOP_DEFAULT_BUFFER_LEN, "{\"type\":\"[\\\"timezone\\\"]\",\"t\":%d}", timestamp);
+        snprintf(buffer, MATOP_DEFAULT_BUFFER_LEN, "{\"type\":\"[\\\"timezone\\\"]\",\"t\":%ld}", timestamp);
         break;
     case HTTP_DYNAMIC_CFG_RATERULE:
-        snprintf(buffer, MATOP_DEFAULT_BUFFER_LEN, "{\"type\":\"[\\\"rateRule\\\"]\",\"t\":%d}", timestamp);
+        snprintf(buffer, MATOP_DEFAULT_BUFFER_LEN, "{\"type\":\"[\\\"rateRule\\\"]\",\"t\":%ld}", timestamp);
         break;
     case HTTP_DYNAMIC_CFG_ALL:
     default:
-        snprintf(buffer, MATOP_DEFAULT_BUFFER_LEN, "{\"type\":\"[\\\"timezone\\\",\\\"rateRule\\\"]\",\"t\":%d}", timestamp);
+        snprintf(buffer, MATOP_DEFAULT_BUFFER_LEN, "{\"type\":\"[\\\"timezone\\\",\\\"rateRule\\\"]\",\"t\":%ld}", timestamp);
         break;
     }
 
@@ -644,7 +644,7 @@ int matop_service_dynamic_cfg_ack(matop_context_t* context,
         offset += snprintf(buffer + offset, DYNAMIC_CFG_ACK_BUFFER_LEN - offset, "{\"type\":\"rateRule\",\"ackId\":%s}", rateRule_actId);
     }
 
-    snprintf(buffer + offset, DYNAMIC_CFG_ACK_BUFFER_LEN, "],\"t\":%d}", system_timestamp());
+    snprintf(buffer + offset, DYNAMIC_CFG_ACK_BUFFER_LEN, "],\"t\":%ld}", system_timestamp());
 
     buffer_len = strlen(buffer) + 1;
     TY_LOGV("dynamic cfg ack data:%s", buffer);
