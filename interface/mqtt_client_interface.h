@@ -23,7 +23,7 @@ typedef enum mqtt_client_status {
     MQTT_STATUS_NETWORK_INIT_FAILED,
     MQTT_STATUS_NETWORK_CONNECT_FAILED,
     MQTT_STATUS_NETWORK_TIMEOUT,
-} mqtt_client_status_t;
+} tuya_mqtt_client_status_t;
 
 typedef enum mqtt_cleint_qos
 {
@@ -58,19 +58,19 @@ typedef struct {
     void (*on_unsubscribed)(void* client, uint16_t msgid, void* userdata);
 } mqtt_client_config_t;
 
-void* mqtt_client_new(void);
+void* tuya_mqtt_client_new(void);
 
 void  mqtt_client_free(void* client);
 
-mqtt_client_status_t mqtt_client_init(void* client, const mqtt_client_config_t* config);
+tuya_mqtt_client_status_t mqtt_client_init(void* client, const mqtt_client_config_t* config);
 
-mqtt_client_status_t mqtt_client_deinit(void* client);
+tuya_mqtt_client_status_t mqtt_client_deinit(void* client);
 
-mqtt_client_status_t mqtt_client_connect(void* client);
+tuya_mqtt_client_status_t tuya_mqtt_client_connect(void* client);
 
-mqtt_client_status_t mqtt_client_disconnect(void* client);
+tuya_mqtt_client_status_t mqtt_client_disconnect(void* client);
 
-mqtt_client_status_t mqtt_client_yield(void* client);
+tuya_mqtt_client_status_t mqtt_client_yield(void* client);
 
 uint16_t mqtt_client_subscribe(void* client, const char* topic, uint8_t qos);
 

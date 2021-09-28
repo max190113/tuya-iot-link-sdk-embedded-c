@@ -388,7 +388,7 @@ static void mqtt_service_upgrade_notify_on(tuya_mqtt_event_t* ev)
     }
 }
 
-static void mqtt_client_connected_on(void* context, void* user_data)
+static void tuya_mqtt_client_connected_on(void* context, void* user_data)
 {
     tuya_iot_client_t* client = (tuya_iot_client_t*)user_data;
 
@@ -475,7 +475,7 @@ static int run_state_startup_update(tuya_iot_client_t* client)
         .localkey = client->activate.localkey,
         .timeout = MQTT_RECV_BLOCK_TIME_MS,
         .user_data = client,
-        .on_connected = mqtt_client_connected_on,
+        .on_connected = tuya_mqtt_client_connected_on,
         .on_disconnect = mqtt_client_disconnect_on,
         .on_unbind = mqtt_client_unbind_on,
     });

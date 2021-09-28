@@ -78,7 +78,7 @@ static void core_mqtt_library_callback( struct MQTTContext* pContext,
     }
 }
 
-void* mqtt_client_new(void)
+void* tuya_mqtt_client_new(void)
 {
     return system_malloc(sizeof(mqtt_client_context_t));
 }
@@ -88,7 +88,7 @@ void mqtt_client_free(void* client)
     system_free(client);
 }
 
-mqtt_client_status_t mqtt_client_init(void* client, const mqtt_client_config_t* config)
+tuya_mqtt_client_status_t mqtt_client_init(void* client, const mqtt_client_config_t* config)
 {
     mqtt_client_context_t* context = (mqtt_client_context_t*)client;
     MQTTStatus_t mqtt_status;
@@ -148,7 +148,7 @@ mqtt_client_status_t mqtt_client_init(void* client, const mqtt_client_config_t* 
     return MQTT_STATUS_SUCCESS;
 }
 
-mqtt_client_status_t mqtt_client_deinit(void* client)
+tuya_mqtt_client_status_t mqtt_client_deinit(void* client)
 {
     mqtt_client_context_t* context = (mqtt_client_context_t*)client;
     context->network.disconnect(&context->network);
@@ -156,7 +156,7 @@ mqtt_client_status_t mqtt_client_deinit(void* client)
     return MQTT_STATUS_SUCCESS;
 }
 
-mqtt_client_status_t mqtt_client_connect(void* client)
+tuya_mqtt_client_status_t tuya_mqtt_client_connect(void* client)
 {
     mqtt_client_context_t* context = (mqtt_client_context_t*)client;
     MQTTStatus_t mqtt_status;
@@ -201,7 +201,7 @@ mqtt_client_status_t mqtt_client_connect(void* client)
     return MQTT_STATUS_SUCCESS;
 }
 
-mqtt_client_status_t mqtt_client_disconnect(void* client)
+tuya_mqtt_client_status_t mqtt_client_disconnect(void* client)
 {
     mqtt_client_context_t* context = (mqtt_client_context_t*)client;
     MQTTStatus_t mqtt_status;
@@ -291,7 +291,7 @@ uint16_t mqtt_client_publish(void* client, const char* topic, const uint8_t* pay
     return msgid;
 }
 
-mqtt_client_status_t mqtt_client_yield(void* client)
+tuya_mqtt_client_status_t mqtt_client_yield(void* client)
 {
     mqtt_client_context_t* context = (mqtt_client_context_t*)client;
     MQTTStatus_t mqtt_status;
