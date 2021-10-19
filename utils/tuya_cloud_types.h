@@ -14,6 +14,7 @@ Copyright(C),2018-2020, 涂鸦科技 www.tuya.comm
 #endif
 
 #include <stddef.h>
+#include <machine/endian.h>
 #include "tuya_error_code.h"
 
 #ifdef __cplusplus
@@ -167,7 +168,7 @@ typedef size_t SIZE_T;
     X |= temp_high;\
 }
 
-#if defined(LITTLE_END) && (LITTLE_END==1)
+#if defined(LITTLE_ENDIAN) && (LITTLE_ENDIAN==BYTE_ORDER)
 #define UNI_NTOHS(X) WORD_SWAP(X)
 #define UNI_HTONS(X) WORD_SWAP(X)
 #define UNI_NTOHL(X) DWORD_SWAP(X)
