@@ -534,29 +534,6 @@ int tuya_iot_init(tuya_iot_client_t* client, const tuya_iot_config_t* config)
 {
     int ret = OPRT_OK;
     TY_LOGI("tuya_iot_init");
-    osiPipe_t *at_rx_pipe = osiPipeCreate(1024);
-    osiPipe_t *at_tx_pipe = osiPipeCreate(1024);
-    osiPipeSetReaderCallback(at_tx_pipe, OSI_PIPE_EVENT_RX_ARRIVED,
-                             prvVirtAtRespCallback, at_tx_pipe);
-
-    atDeviceVirtConfig_t cfg = {
-        .name = OSI_MAKE_TAG('V', 'A', 'T', '1'),
-        .rx_pipe = at_rx_pipe,
-        .tx_pipe = at_tx_pipe,
-    };
-    atDevice_t *device = atDeviceVirtCreate(&cfg);
-    atDispatch_t *dispatch = atDispatchCreate(device);
-    atDeviceSetDispatch(device, dispatch);
-    atDeviceOpen(device);
-    
-    const char *cmd = "AT+CGACT=1\r\n";
-    while (!at_cgact_flag) {
-        if (osiPipeWriteAll(at_rx_pipe, cmd, strlen(cmd), OSI_WAIT_FOREVER) != 0) {
-            OSI_LOGXI(OSI_LOGPAR_S, 0, "VAT1 -->: %s", cmd);
-        }
-        system_sleep(500);
-    }
-    atDeviceClose(device);
 
     if (vfs_mkdir(TUYA_NVS_PATH, 0777) < 0) {
         OSI_LOGE(0, "mkdir error : %s", TUYA_NVS_PATH);
