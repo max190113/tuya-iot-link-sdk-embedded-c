@@ -534,6 +534,7 @@ int tuya_iot_init(tuya_iot_client_t* client, const tuya_iot_config_t* config)
 {
     int ret = OPRT_OK;
     TY_LOGI("tuya_iot_init");
+#if 0
     osiPipe_t *at_rx_pipe = osiPipeCreate(1024);
     osiPipe_t *at_tx_pipe = osiPipeCreate(1024);
     osiPipeSetReaderCallback(at_tx_pipe, OSI_PIPE_EVENT_RX_ARRIVED,
@@ -557,6 +558,7 @@ int tuya_iot_init(tuya_iot_client_t* client, const tuya_iot_config_t* config)
         system_sleep(500);
     }
     atDeviceClose(device);
+#endif
 
     if (vfs_mkdir(TUYA_NVS_PATH, 0777) < 0) {
         OSI_LOGE(0, "mkdir error : %s", TUYA_NVS_PATH);
