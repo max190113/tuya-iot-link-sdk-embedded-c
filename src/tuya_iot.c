@@ -45,6 +45,7 @@ typedef enum {
 } tuya_run_state_t;
 
 
+#if 0
 /* -------------------------------------------------------------------------- */
 /*            8910 virtual at command,respond to "AT+CGACT=1"                 */
 /* -------------------------------------------------------------------------- */
@@ -69,6 +70,7 @@ static void prvVirtAtRespCallback(void *param, unsigned event)
         }
     }
 }
+#endif
 
 /* -------------------------------------------------------------------------- */
 /*                          Internal utils functions                          */
