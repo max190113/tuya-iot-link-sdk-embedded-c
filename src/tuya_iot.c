@@ -584,6 +584,10 @@ int tuya_iot_init(tuya_iot_client_t* client, const tuya_iot_config_t* config)
     * If the reading is successful, the device has been activated. */
     if (activated_data_read(client->config.storage_namespace, &client->activate) == OPRT_OK) {
         client->is_activated = true;
+        /* Send Binded notify event to user program */
+        client->event.id = TUYA_EVENT_BINDED_NOTIFY;
+        client->event.type = TUYA_DATE_TYPE_UNDEFINED;
+        iot_dispatch_event(client);
     }
 
     /* Auto check upgrade timer init */
